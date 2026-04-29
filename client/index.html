@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KrishiMitra — AI-powered crop advisory for Assam farmers.">
+  <title>KrishiMitra 🌾 — AI Crop Advisory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🌾</span>
+        <h1 data-i18n="app_name">KrishiMitra</h1>
+      </div>
+      <button id="langToggle" class="lang-toggle" onclick="toggleLanguage()">অসমীয়া</button>
+    </div>
+  </header>
+
+  <section id="hero" class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🤖 AI-Powered Advisory</div>
+      <h2 data-i18n="app_tagline">AI-Powered Crop Advisory for Assam Farmers</h2>
+      <p data-i18n="app_subtitle">Get personalized crop recommendations based on your soil, season, weather & budget</p>
+    </div>
+    <div class="hero-decoration">
+      <div class="floating-leaf leaf-1">🍃</div>
+      <div class="floating-leaf leaf-2">🌿</div>
+      <div class="floating-leaf leaf-3">☘️</div>
+    </div>
+  </section>
+
+  <section id="formSection" class="form-section">
+    <div class="form-container">
+      <form id="cropForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="district" data-i18n="label_district">District</label>
+            <select id="district" name="district" required>
+              <option value="" data-i18n="select_district_placeholder">-- Select District --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="soil" data-i18n="label_soil">Soil Type</label>
+            <select id="soil" name="soil" required>
+              <option value="" data-i18n="select_placeholder">-- Select --</option>
+              <option value="clay" data-i18n="soil_clay">Clay</option>
+              <option value="loam" data-i18n="soil_loam">Loam</option>
+              <option value="sandy" data-i18n="soil_sandy">Sandy</option>
+              <option value="alluvial" data-i18n="soil_alluvial">Alluvial</option>
+              <option value="laterite" data-i18n="soil_laterite">Laterite</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="season" data-i18n="label_season">Season</label>
+            <select id="season" name="season" required>
+              <option value="" data-i18n="select_placeholder">-- Select --</option>
+              <option value="kharif" data-i18n="season_kharif">Kharif (Jun–Oct)</option>
+              <option value="rabi" data-i18n="season_rabi">Rabi (Nov–Mar)</option>
+              <option value="zaid" data-i18n="season_zaid">Zaid (Mar–Jun)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="water" data-i18n="label_water">Water Availability</label>
+            <select id="water" name="water" required>
+              <option value="" data-i18n="select_placeholder">-- Select --</option>
+              <option value="rainfed" data-i18n="water_rainfed">Rain-fed</option>
+              <option value="irrigated" data-i18n="water_irrigated">Irrigated</option>
+              <option value="partial" data-i18n="water_partial">Partially Irrigated</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="budget" data-i18n="label_budget">Budget</label>
+            <select id="budget" name="budget" required>
+              <option value="" data-i18n="select_placeholder">-- Select --</option>
+              <option value="low" data-i18n="budget_low">Low (Under ₹3,000/bigha)</option>
+              <option value="medium" data-i18n="budget_medium">Medium (₹3,000–8,000/bigha)</option>
+              <option value="high" data-i18n="budget_high">High (Above ₹8,000/bigha)</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" id="submitBtn" class="submit-btn">
+          <span id="btnText" data-i18n="btn_submit">Get Recommendations</span>
+          <div id="btnSpinner" class="spinner hidden"></div>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <div id="errorToast" class="error-toast hidden">
+    <span id="errorText"></span>
+    <button onclick="hideError()" class="toast-close">✕</button>
+  </div>
+
+  <section id="resultsSection" class="results-section hidden">
+    <div id="weatherWidget" class="weather-widget">
+      <h3 data-i18n="weather_title">Current Weather</h3>
+      <div class="weather-grid" id="weatherGrid"></div>
+    </div>
+    <h3 class="results-heading" data-i18n="results_title">Recommended Crops</h3>
+    <div id="cropCards" class="crop-cards-grid"></div>
+    <div id="generalAdvice" class="general-advice"></div>
+  </section>
+
+  <footer id="footer">
+    <p data-i18n="footer_text">Built with ❤️ for Assam's Farmers</p>
+    <p class="footer-sub" data-i18n="footer_hackathon">Hackathon Project 2026</p>
+  </footer>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
