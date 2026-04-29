@@ -1,0 +1,9 @@
+{
+  "name": "krishimitra",
+  "version": "1.0.0",
+  "description": "AI-powered crop advisory system for Assam farmers",
+  "scripts": {
+    "start": "node server/server.js",
+    "build": "cd server && npm install"
+  }
+}
