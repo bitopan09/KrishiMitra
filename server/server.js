@@ -1,7 +1,7 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 
 const { getWeather } = require('./services/weather');
 const { getCropRecommendation } = require('./services/ai');
@@ -15,7 +15,9 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static frontend files
-app.use(express.static(path.join(__dirname, '..', 'client')));
+const clientPath = path.join(__dirname, '..', 'client');
+console.log('📁 Serving static files from:', clientPath);
+app.use(express.static(clientPath));
 
 // ─── API Routes ────────────────────────────────────────────
 
@@ -102,7 +104,7 @@ app.get('/health', (req, res) => {
 
 // Fallback — serve frontend for any other route
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
+  res.sendFile(path.join(clientPath, 'index.html'));
 });
 
 // ─── Start Server ──────────────────────────────────────────
