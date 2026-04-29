@@ -2,6 +2,8 @@
 
 **AI-Powered Crop Recommendation & Advisory System for Assam Farmers**
 
+🔗 **Live Demo:** [https://krishimitra-p62s.onrender.com](https://krishimitra-p62s.onrender.com)
+
 KrishiMitra helps small and marginal farmers in Assam get personalized crop recommendations based on their soil type, season, water availability, budget, and live weather data.
 
 ## Features
@@ -25,8 +27,8 @@ KrishiMitra helps small and marginal farmers in Assam get personalized crop reco
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/krishimitra.git
-   cd krishimitra
+   git clone https://github.com/bitopan09/KrishiMitra.git
+   cd KrishiMitra
    ```
 
 2. **Install dependencies**
