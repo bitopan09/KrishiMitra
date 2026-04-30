@@ -14,7 +14,7 @@ const char* ssid = "qwerty12";
 const char* password = "pps20004";
 
 // The endpoint on your Node.js server
-const char* serverName = "http://10.209.39.42:3000/api/latest-advisory";
+const char* serverName = "https://krishimitra-1-o0dj.onrender.com/api/latest-advisory";
 
 // ---- DISPLAY SETTINGS ----
 #define PAGE_DURATION_MS  3000   // Show each page for 3 seconds

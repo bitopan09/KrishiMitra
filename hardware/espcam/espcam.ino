@@ -8,7 +8,7 @@ const char* password = "pps20004";
 
 // Replace with your computer's local IP address running the Node.js server
 // e.g., "http://192.168.1.5:3000/api/upload-soil"
-String serverName = "http://10.209.39.42:3000/api/upload-soil"; 
+String serverName = "https://krishimitra-1-o0dj.onrender.com/api/upload-soil"; 
 
 // ---- CAPTURE SETTINGS ----
 #define NUM_PHOTOS      5       // Number of photos to take
