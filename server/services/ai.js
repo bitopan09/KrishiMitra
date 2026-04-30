@@ -46,7 +46,7 @@ async function getCropRecommendation({ district, soil, season, water, budget, la
             { role: 'user', content: prompt }
           ],
           temperature: 0.7,
-          max_tokens: 1500
+          max_tokens: 2500
         },
         {
           headers: {
@@ -84,7 +84,7 @@ function buildPrompt({ district, soil, season, water, budget, lang }, weather) {
     langInstruction = `\n\nIMPORTANT: Write ALL JSON string values in Hindi (हिन्दी) script. The JSON keys must remain in English, but every value — crop names, sowing times, fertilizer info, tips, advice — must be written in Hindi script. Use standard numerals for quantities.`;
   }
 
-  return `A small farmer in ${district} district, Assam, India needs crop recommendations.
+  return `A small farmer in ${district} district, Assam, India needs crop recommendations and relevant government schemes.
 
 FARMER'S CONDITIONS:
 - Soil type: ${soil}
@@ -100,7 +100,9 @@ CURRENT WEATHER IN ${district.toUpperCase()}:
 - Total rainfall in next 7 days: ${weather.weekly_rainfall_mm} mm
 - Current conditions: ${weather.description}
 
-Based on these specific conditions, recommend exactly 3 crops that this farmer should grow. Consider the local agro-climatic conditions of Assam's Brahmaputra valley.${langInstruction}
+Based on these specific conditions:
+1. Recommend exactly 3 crops that this farmer should grow. Consider the local agro-climatic conditions of Assam's Brahmaputra valley.
+2. Suggest 2-3 relevant government schemes (Central or Assam state schemes) that would help this farmer. These should be REAL, currently active schemes like PM-KISAN, PMFBY, KCC, Assam Agri-Horticultural Society schemes, Chief Minister Samagra Gramya Unnayan Yojana, etc. For each scheme, provide very simple step-by-step instructions that a rural farmer can follow.${langInstruction}
 
 Respond ONLY with valid JSON in this exact format, no other text:
 {
@@ -115,6 +117,23 @@ Respond ONLY with valid JSON in this exact format, no other text:
       "water_needs": "Water requirement description",
       "estimated_cost": "Approximate input cost per bigha in INR",
       "tips": "2-3 practical tips for this crop in this region"
+    }
+  ],
+  "schemes": [
+    {
+      "scheme_name": "Full official name of the scheme",
+      "type": "Central or State",
+      "description": "One line simple description of what the scheme does",
+      "eligibility": "Who can apply — keep it simple",
+      "benefits": "What the farmer gets (money, insurance, subsidy, etc.)",
+      "how_to_apply": [
+        "Step 1: Go to your nearest ...",
+        "Step 2: Carry these documents ...",
+        "Step 3: Fill this form ...",
+        "Step 4: You will receive ..."
+      ],
+      "documents_needed": "Aadhaar card, land papers, bank passbook, etc.",
+      "helpline": "Toll-free number or website if available"
     }
   ],
   "general_advice": "One paragraph of general seasonal advice for this farmer"
@@ -167,6 +186,15 @@ function parseAIResponse(content) {
       }
     });
 
+    // Normalize schemes: ensure how_to_apply is always an array
+    if (parsed.schemes && Array.isArray(parsed.schemes)) {
+      parsed.schemes.forEach(scheme => {
+        if (typeof scheme.how_to_apply === 'string') {
+          scheme.how_to_apply = scheme.how_to_apply.split(/\n|;/).map(s => s.trim()).filter(Boolean);
+        }
+      });
+    }
+
     return parsed;
   } catch (parseError) {
     console.error('Failed to parse AI response:', content);
@@ -205,6 +233,53 @@ function parseAIResponse(content) {
           water_needs: 'Medium — irrigated preferred',
           estimated_cost: '₹5,000-7,000 per bigha',
           tips: 'Use Kufri Jyoti variety. Earth up at 30 and 45 days after planting.'
+        }
+      ],
+      schemes: [
+        {
+          scheme_name: 'PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)',
+          type: 'Central',
+          description: 'Direct income support of ₹6,000 per year to all landholding farmer families.',
+          eligibility: 'All farmer families with cultivable landholding.',
+          benefits: '₹6,000 per year in 3 installments of ₹2,000 directly to bank account.',
+          how_to_apply: [
+            'Step 1: Visit your nearest Common Service Centre (CSC) or Krishi Bhawan.',
+            'Step 2: Carry Aadhaar card, bank passbook, and land ownership papers.',
+            'Step 3: Ask the operator to register you on pmkisan.gov.in.',
+            'Step 4: Money will come directly to your bank account every 4 months.'
+          ],
+          documents_needed: 'Aadhaar Card, Bank Passbook, Land Records (Jamabandi/Patta)',
+          helpline: '155261 or pmkisan.gov.in'
+        },
+        {
+          scheme_name: 'PMFBY (Pradhan Mantri Fasal Bima Yojana)',
+          type: 'Central',
+          description: 'Crop insurance scheme — protects farmers from crop loss due to natural calamities.',
+          eligibility: 'All farmers growing notified crops in notified areas.',
+          benefits: 'Insurance cover for crop loss. Farmer pays only 2% premium for Kharif, 1.5% for Rabi.',
+          how_to_apply: [
+            'Step 1: Visit your bank branch where you have your Kisan Credit Card or crop loan.',
+            'Step 2: Carry Aadhaar card, bank passbook, land papers, and sowing certificate.',
+            'Step 3: Fill the crop insurance form at the bank before the sowing deadline.',
+            'Step 4: If crop is damaged, inform the insurance company within 72 hours of the calamity.'
+          ],
+          documents_needed: 'Aadhaar Card, Bank Passbook, Land Records, Sowing Certificate from Gaon Burah',
+          helpline: '1800-180-1551 (toll-free) or pmfby.gov.in'
+        },
+        {
+          scheme_name: 'Kisan Credit Card (KCC)',
+          type: 'Central',
+          description: 'Easy credit card for farmers to get loans at low interest for buying seeds, fertilizers, and other farming needs.',
+          eligibility: 'All farmers — including tenant farmers and sharecroppers.',
+          benefits: 'Crop loan up to ₹3 lakh at just 4% interest. No collateral needed up to ₹1.6 lakh.',
+          how_to_apply: [
+            'Step 1: Go to your nearest bank branch (SBI, Assam Gramin Vikash Bank, etc.).',
+            'Step 2: Carry Aadhaar card, PAN card (if available), land papers, passport-size photos.',
+            'Step 3: Fill the KCC application form. Bank will verify your land records.',
+            'Step 4: KCC card will be issued in 14 days. Use it to withdraw money as needed.'
+          ],
+          documents_needed: 'Aadhaar Card, Land Records, Passport Photo, Bank Account',
+          helpline: 'Visit nearest bank branch or call 1800-180-1111 (SBI)'
         }
       ],
       general_advice: 'Based on current conditions, focus on proper land preparation and timely sowing. Monitor weather updates regularly and ensure adequate drainage during heavy rainfall periods.'

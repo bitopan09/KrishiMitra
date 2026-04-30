@@ -4,6 +4,10 @@
 
 const API_BASE = window.location.origin;
 
+// Store last form data to re-fetch when language changes
+let lastFormData = null;
+let isRefetching = false;
+
 // ─── DOM Elements ─────────────────────────────────
 const cropForm = document.getElementById('cropForm');
 const submitBtn = document.getElementById('submitBtn');
@@ -13,6 +17,8 @@ const resultsSection = document.getElementById('resultsSection');
 const weatherGrid = document.getElementById('weatherGrid');
 const cropCards = document.getElementById('cropCards');
 const generalAdvice = document.getElementById('generalAdvice');
+const schemesSection = document.getElementById('schemesSection');
+const schemeCards = document.getElementById('schemeCards');
 const errorToast = document.getElementById('errorToast');
 const errorText = document.getElementById('errorText');
 
@@ -63,6 +69,9 @@ cropForm.addEventListener('submit', async (e) => {
     return;
   }
 
+  // Store form data for language re-fetch
+  lastFormData = { ...formData };
+
   // Show loading state
   setLoading(true);
   hideError();
@@ -89,9 +98,47 @@ cropForm.addEventListener('submit', async (e) => {
 });
 
 /**
- * Render the full results: weather + crop cards + advice
+ * Re-fetch results in a new language (called when language toggles with results visible)
  */
-function renderResults(data) {
+async function refetchInLanguage() {
+  if (!lastFormData || isRefetching) return;
+
+  isRefetching = true;
+  lastFormData.lang = currentLang;
+
+  // Show a subtle loading indicator on the results
+  resultsSection.style.opacity = '0.5';
+  resultsSection.style.pointerEvents = 'none';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/recommend`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lastFormData)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || t('error_generic'));
+    }
+
+    renderResults(data, false); // false = don't scroll
+  } catch (err) {
+    console.error('Language re-fetch failed:', err);
+    // Just re-render labels with current translations, keep old data
+  } finally {
+    resultsSection.style.opacity = '1';
+    resultsSection.style.pointerEvents = 'auto';
+    isRefetching = false;
+  }
+}
+
+/**
+ * Render the full results: weather + crop cards + advice
+ * @param {boolean} shouldScroll - whether to auto-scroll to results (default true)
+ */
+function renderResults(data, shouldScroll = true) {
   // Show results section
   resultsSection.classList.remove('hidden');
 
@@ -109,12 +156,22 @@ function renderResults(data) {
     `;
   }
 
-  // Smooth scroll to results
-  setTimeout(() => {
-    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 200);
+  // Render government schemes
+  if (data.schemes && data.schemes.length > 0) {
+    renderSchemeCards(data.schemes);
+    schemesSection.classList.remove('hidden');
+  } else {
+    schemesSection.classList.add('hidden');
+  }
 
-  // Re-apply translations if in Assamese mode
+  // Smooth scroll to results
+  if (shouldScroll) {
+    setTimeout(() => {
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  }
+
+  // Re-apply translations for static labels
   applyTranslations();
 }
 
@@ -127,8 +184,8 @@ function renderWeather(weather) {
     { icon: '💧', value: `${weather.humidity}%`, label: t('weather_humidity') },
     { icon: '🌧️', value: `${weather.weekly_rainfall_mm}mm`, label: t('weather_rainfall') },
     { icon: '💨', value: `${weather.windspeed} km/h`, label: t('weather_wind') },
-    { icon: '☀️', value: `${weather.avg_max_temp}°C`, label: 'Max Temp' },
-    { icon: '🌙', value: `${weather.avg_min_temp}°C`, label: 'Min Temp' }
+    { icon: '☀️', value: `${weather.avg_max_temp}°C`, label: t('weather_max_temp') },
+    { icon: '🌙', value: `${weather.avg_min_temp}°C`, label: t('weather_min_temp') }
   ];
 
   weatherGrid.innerHTML = items.map(item => `
@@ -182,6 +239,75 @@ function renderDetail(icon, label, value) {
       <span class="crop-detail-value">${value}</span>
     </div>
   `;
+}
+
+/**
+ * Render government scheme cards
+ */
+function renderSchemeCards(schemes) {
+  schemeCards.innerHTML = schemes.map((scheme, i) => {
+    const steps = Array.isArray(scheme.how_to_apply)
+      ? scheme.how_to_apply
+      : (scheme.how_to_apply || '').split(/\n|;/).filter(Boolean);
+
+    const typeBadge = scheme.type === 'State' || scheme.type === 'ৰাজ্যিক' || scheme.type === 'राज्य'
+      ? `<span class="scheme-badge scheme-badge-state">🏛️ ${scheme.type}</span>`
+      : `<span class="scheme-badge scheme-badge-central">🇮🇳 ${scheme.type}</span>`;
+
+    return `
+      <div class="scheme-card" style="animation-delay: ${i * 0.08}s">
+        <div class="scheme-card-header">
+          <div class="scheme-card-title">
+            <h4>${scheme.scheme_name}</h4>
+            ${typeBadge}
+          </div>
+        </div>
+        <p class="scheme-description">${scheme.description}</p>
+
+        <div class="scheme-info-grid">
+          <div class="scheme-info-item">
+            <span class="scheme-info-icon">👤</span>
+            <div>
+              <span class="scheme-info-label">${t('scheme_eligibility')}</span>
+              <span class="scheme-info-value">${scheme.eligibility}</span>
+            </div>
+          </div>
+          <div class="scheme-info-item">
+            <span class="scheme-info-icon">🎁</span>
+            <div>
+              <span class="scheme-info-label">${t('scheme_benefits')}</span>
+              <span class="scheme-info-value">${scheme.benefits}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="scheme-steps">
+          <h5>📋 ${t('scheme_how_to_apply')}</h5>
+          <ol class="steps-list">
+            ${steps.map(step => {
+              const cleanStep = step.replace(/^Step\s*\d+[:.\-]\s*/i, '');
+              return `<li>${cleanStep}</li>`;
+            }).join('')}
+          </ol>
+        </div>
+
+        <div class="scheme-footer">
+          ${scheme.documents_needed ? `
+            <div class="scheme-docs">
+              <span class="scheme-info-icon">📄</span>
+              <span><strong>${t('scheme_documents')}:</strong> ${scheme.documents_needed}</span>
+            </div>
+          ` : ''}
+          ${scheme.helpline ? `
+            <div class="scheme-helpline">
+              <span class="scheme-info-icon">📞</span>
+              <span><strong>${t('scheme_helpline')}:</strong> ${scheme.helpline}</span>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 /**
