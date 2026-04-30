@@ -1,4 +1,4 @@
-# KrishiMitra 🌾
+# KrishiMitra 
 
 **AI-Powered Crop Recommendation & Advisory System for Assam Farmers**
 
@@ -8,11 +8,11 @@ KrishiMitra helps small and marginal farmers in Assam get personalized crop reco
 
 ## Features
 
-- 🤖 **AI-Powered Recommendations** — Uses free LLM models via OpenRouter to generate 3 crop suggestions with sowing window, fertilizer, yield, and cost estimates
-- 🌦️ **Live Weather Integration** — Fetches real-time weather from Open-Meteo API to make recommendations weather-aware
-- 🗣️ **Trilingual Support** — Full UI and AI responses in **English**, **অসমীয়া (Assamese)**, and **हिन्दी (Hindi)**
-- 📱 **Mobile-First Design** — Clean, minimalist UI optimized for farmers using phones
-- 🌍 **33 Assam Districts** — Covers all districts with precise lat/lng for weather lookups
+-  **AI-Powered Recommendations** — Uses free LLM models via OpenRouter to generate 3 crop suggestions with sowing window, fertilizer, yield, and cost estimates
+-  **Live Weather Integration** — Fetches real-time weather from Open-Meteo API to make recommendations weather-aware
+-  **Trilingual Support** — Full UI and AI responses in **English**, **অসমীয়া (Assamese)**, and **हिन्दी (Hindi)**
+-  **Mobile-First Design** — Clean, minimalist UI optimized for farmers using phones
+-  **33 Assam Districts** — Covers all districts with precise lat/lng for weather lookups
 
 ## Tech Stack
 
