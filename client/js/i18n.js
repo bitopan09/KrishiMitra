@@ -61,6 +61,20 @@ const translations = {
   'weather_humidity': { en: 'Humidity', as: 'আৰ্দ্ৰতা', hi: 'आर्द्रता' },
   'weather_rainfall': { en: '7-Day Rainfall', as: '৭ দিনৰ বৰষুণ', hi: '7 दिन की बारिश' },
   'weather_wind': { en: 'Wind Speed', as: 'বতাহৰ গতি', hi: 'हवा की गति' },
+  'weather_max_temp': { en: 'Max Temp', as: 'সৰ্বোচ্চ তাপ', hi: 'अधिकतम तापमान' },
+  'weather_min_temp': { en: 'Min Temp', as: 'সৰ্বনিম্ন তাপ', hi: 'न्यूनतम तापमान' },
+
+  // ─── Hero ─────────────────────────
+  'hero_badge': { en: '🤖 AI-Powered Advisory', as: '🤖 AI চালিত পৰামৰ্শ', hi: '🤖 AI आधारित सलाह' },
+
+  // ─── Government Schemes ──────────
+  'schemes_title': { en: '🏛️ Government Schemes For You', as: '🏛️ আপোনাৰ বাবে চৰকাৰী আঁচনি', hi: '🏛️ आपके लिए सरकारी योजनाएं' },
+  'schemes_subtitle': { en: 'These schemes can help you with funding, insurance, and support. Follow the simple steps to apply.', as: 'এই আঁচনিসমূহে আপোনাক পুঁজি, বীমা আৰু সহায়তাত সহায় কৰিব পাৰে। আবেদন কৰিবলৈ সৰল পদক্ষেপসমূহ অনুসৰণ কৰক।', hi: 'ये योजनाएं आपको धन, बीमा और सहायता में मदद कर सकती हैं। आवेदन करने के लिए सरल चरणों का पालन करें।' },
+  'scheme_eligibility': { en: 'Who can apply', as: 'কোনে আবেদন কৰিব পাৰে', hi: 'कौन आवेदन कर सकता है' },
+  'scheme_benefits': { en: 'Benefits', as: 'সুবিধা', hi: 'लाभ' },
+  'scheme_how_to_apply': { en: 'How to Apply (Simple Steps)', as: 'কেনেকৈ আবেদন কৰিব (সৰল পদক্ষেপ)', hi: 'आवेदन कैसे करें (आसान चरण)' },
+  'scheme_documents': { en: 'Documents Needed', as: 'প্ৰয়োজনীয় নথি-পত্ৰ', hi: 'आवश्यक दस्तावेज' },
+  'scheme_helpline': { en: 'Helpline', as: 'হেল্পলাইন', hi: 'हेल्पलाइन' },
 
   // ─── Footer ──────────────────────
   'footer_text': { en: 'Built with ❤️ for Assam\'s Farmers', as: 'অসমৰ কৃষকৰ বাবে ❤️ ৰে নিৰ্মিত', hi: 'असम के किसानों के लिए ❤️ से बनाया गया' },
@@ -88,6 +102,14 @@ function toggleLanguage() {
   applyTranslations();
   localStorage.setItem('krishimitra_lang', currentLang);
   updateToggleButton();
+
+  // If results are currently visible, re-fetch everything in the new language
+  const resultsSection = document.getElementById('resultsSection');
+  if (resultsSection && !resultsSection.classList.contains('hidden')) {
+    if (typeof refetchInLanguage === 'function') {
+      refetchInLanguage();
+    }
+  }
 }
 
 /**
