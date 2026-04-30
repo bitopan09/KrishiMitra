@@ -8,6 +8,11 @@ const API_BASE = window.location.origin;
 let lastFormData = null;
 let isRefetching = false;
 
+// ─── Hardware state ───────────────────────────────
+let hwPollingInterval = null;
+let hwLastData = null;
+let activeTab = 'software';
+
 // ─── DOM Elements ─────────────────────────────────
 const cropForm = document.getElementById('cropForm');
 const submitBtn = document.getElementById('submitBtn');
@@ -339,4 +344,131 @@ function showError(message) {
  */
 function hideError() {
   errorToast.classList.add('hidden');
+}
+
+// ═══════════════════════════════════════════════════
+// ─── TAB SWITCHING ────────────────────────────────
+// ═══════════════════════════════════════════════════
+
+function switchTab(tab) {
+  activeTab = tab;
+
+  // Toggle tab buttons
+  document.getElementById('tabSoftware').classList.toggle('active', tab === 'software');
+  document.getElementById('tabHardware').classList.toggle('active', tab === 'hardware');
+
+  // Toggle tab content
+  document.getElementById('softwareTab').classList.toggle('active', tab === 'software');
+  document.getElementById('hardwareTab').classList.toggle('active', tab === 'hardware');
+
+  // Start/stop hardware polling
+  if (tab === 'hardware') {
+    startHardwarePolling();
+  } else {
+    stopHardwarePolling();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// ─── HARDWARE TAB ─────────────────────────────────
+// ═══════════════════════════════════════════════════
+
+function startHardwarePolling() {
+  // Fetch immediately
+  fetchHardwareData();
+  // Then poll every 5 seconds
+  if (hwPollingInterval) clearInterval(hwPollingInterval);
+  hwPollingInterval = setInterval(fetchHardwareData, 5000);
+}
+
+function stopHardwarePolling() {
+  if (hwPollingInterval) {
+    clearInterval(hwPollingInterval);
+    hwPollingInterval = null;
+  }
+}
+
+async function fetchHardwareData() {
+  try {
+    const res = await fetch(`${API_BASE}/api/latest-advisory`);
+    const data = await res.json();
+    updateHardwareUI(data);
+  } catch (err) {
+    console.error('Hardware fetch error:', err);
+  }
+}
+
+function updateHardwareUI(data) {
+  const dot = document.getElementById('hwStatusDot');
+  const statusText = document.getElementById('hwStatusText');
+  const soilVal = document.getElementById('hwSoilValue');
+  const weatherVal = document.getElementById('hwWeatherValue');
+  const cropVal = document.getElementById('hwCropValue');
+  const soilCard = document.getElementById('hwSoilCard');
+  const weatherCard = document.getElementById('hwWeatherCard');
+  const cropCard = document.getElementById('hwCropCard');
+  const countVal = document.getElementById('hwImageCountVal');
+  const timestampEl = document.getElementById('hwTimestamp');
+
+  // Update image count
+  countVal.textContent = data.imageCount || 0;
+
+  if (data.ready) {
+    // Connected state
+    dot.className = 'hw-status-dot connected';
+    statusText.textContent = t('hw_connected');
+
+    // Check if data actually changed
+    const dataChanged = !hwLastData ||
+      hwLastData.soil !== data.soil ||
+      hwLastData.weather !== data.weather ||
+      hwLastData.crop !== data.crop;
+
+    // Update card values
+    soilVal.textContent = data.soil;
+    soilVal.classList.remove('waiting');
+    weatherVal.textContent = data.weather;
+    weatherVal.classList.remove('waiting');
+    cropVal.textContent = data.crop;
+    cropVal.classList.remove('waiting');
+
+    // Add ready class for colored top borders
+    soilCard.classList.add('ready');
+    weatherCard.classList.add('ready');
+    cropCard.classList.add('ready');
+
+    // Animate cards if data changed
+    if (dataChanged) {
+      [soilCard, weatherCard, cropCard].forEach(card => {
+        card.classList.remove('updated');
+        void card.offsetWidth; // force reflow
+        card.classList.add('updated');
+      });
+    }
+
+    // Update timestamp
+    if (data.timestamp) {
+      const date = new Date(data.timestamp);
+      timestampEl.textContent = date.toLocaleTimeString();
+    }
+
+    hwLastData = { ...data };
+  } else {
+    // Waiting state
+    dot.className = 'hw-status-dot waiting';
+    statusText.textContent = t('hw_waiting');
+
+    soilVal.textContent = t('hw_waiting_short');
+    soilVal.classList.add('waiting');
+    weatherVal.textContent = t('hw_waiting_short');
+    weatherVal.classList.add('waiting');
+    cropVal.textContent = t('hw_waiting_short');
+    cropVal.classList.add('waiting');
+
+    soilCard.classList.remove('ready');
+    weatherCard.classList.remove('ready');
+    cropCard.classList.remove('ready');
+
+    timestampEl.textContent = '--';
+  }
 }

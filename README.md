@@ -4,120 +4,156 @@
 
 🔗 **Live Demo:** [https://krishimitra-p62s.onrender.com](https://krishimitra-p62s.onrender.com)
 
-KrishiMitra helps small and marginal farmers in Assam get personalized crop recommendations and relevant government scheme suggestions based on their soil type, season, water availability, budget, and live weather data.
+KrishiMitra helps small and marginal farmers in Assam get personalized crop recommendations, relevant government scheme suggestions, and now — real-time soil analysis via an ESP32-CAM hardware module.
 
 ---
 
-## ✨ Features
+## 🆕 What's New in v1.2 — Hardware Integration
 
-### 🤖 AI-Powered Crop Recommendations
-Uses free LLM models via OpenRouter to generate 3 crop suggestions with sowing window, fertilizer, yield, and cost estimates tailored to the farmer's conditions.
+### 🔩 Two-Tab Interface
+The website now has a **Software** tab and a **Hardware** tab:
 
-### 🏛️ Government Scheme Suggestions *(New in v1.1)*
-After crop recommendations, the AI suggests 2–3 relevant Central & Assam state government schemes (PM-KISAN, PMFBY, KCC, etc.) with:
-- ✅ **Eligibility** — Who can apply
-- 🎁 **Benefits** — What the farmer gets
-- 📋 **Step-by-step instructions** — Simple steps any farmer can follow
-- 📄 **Documents needed** — Aadhaar, land papers, bank passbook, etc.
-- 📞 **Helpline numbers** — Toll-free numbers and websites
+| Tab | Description |
+|-----|-------------|
+| 💻 **Software** | Fill in your district, soil, season, water & budget → get AI crop recommendations + government schemes |
+| 🔩 **Hardware** | Connect your ESP32-CAM → it captures a soil photo → AI analyzes it → live results shown in real time |
 
-### 🗣️ Full Trilingual Support *(Enhanced in v1.1)*
-Complete UI and AI responses in **English**, **অসমীয়া (Assamese)**, and **हिन्दी (Hindi)**:
-- Every single UI element switches language on toggle
-- **AI-generated content auto re-fetches** in the new language — crop names, scheme details, application steps, advice — everything translates
-- Language preference saved to localStorage
+### 📷 ESP32-CAM Soil Analysis
+- ESP32-CAM takes a soil photo and uploads it to `POST /api/upload-soil`
+- Server uses **Gemini 2.0 Flash Vision** to identify soil type, weather outlook, and best crop
+- Website hardware tab auto-refreshes every **5 seconds** and shows the latest advisory
+- 🟡 Orange dot = Waiting for device | 🟢 Green dot = Data received!
 
-### 🌦️ Live Weather Integration
-Fetches real-time weather from Open-Meteo API (free, no key needed) to make recommendations weather-aware. Displays temperature, humidity, rainfall, wind speed, max/min temp.
+### 🖥️ ESP32 OLED Display
+- Fetches `GET /api/latest-advisory` every 10 seconds
+- Cycles through 3 pages (Soil Type → Weather → Best Crop) every 3 seconds
 
-### 📱 Mobile-First Design
-Clean, minimalist UI with Inter font, optimized for farmers using phones.
-
-### 🌍 33 Assam Districts
-Covers all districts with precise lat/lng coordinates for accurate weather lookups.
+```
+┌─────────────┐    WiFi/HTTP POST    ┌──────────────┐    Gemini Vision AI
+│  ESP32-CAM   │ ──────────────────► │  Node.js     │ ──────────────────►
+│  (Soil Photo)│                     │  Server      │
+└─────────────┘                     └──────┬───────┘
+                                           │ /api/latest-advisory
+                         ┌─────────────────┴──────────────────┐
+                         │                                    │
+                  ┌──────▼──────┐                    ┌────────▼───────┐
+                  │  Website     │                    │  ESP32 OLED    │
+                  │  Hardware Tab│                    │  (Field Display)│
+                  └─────────────┘                    └────────────────┘
+```
 
 ---
 
-## 🛠️ Tech Stack
+## ✨ All Features
+
+| | Feature | Description |
+|--|---------|-------------|
+| 📷 | **Soil Image Analysis** | ESP32-CAM captures soil photos; Gemini Vision AI identifies soil type |
+| 🖥️ | **OLED Field Display** | Portable 128×64 OLED cycles Soil → Weather → Crop advisory |
+| 🤖 | **AI Crop Recommendations** | 3 crop suggestions with sowing window, fertilizer, yield, and cost |
+| 🏛️ | **Government Schemes** | 2–3 relevant Central/State schemes with step-by-step application instructions |
+| 🌦️ | **Live Weather Integration** | Real-time weather + 7-day forecast from Open-Meteo API |
+| 🗣️ | **Full Trilingual Support** | Every single word switches between English, অসমীয়া, and हिन्दी |
+| 📱 | **Mobile-First Design** | Clean, minimalist UI optimized for farmers using phones |
+| 🌍 | **33 Assam Districts** | All districts with precise lat/lng for accurate weather lookups |
+
+---
+
+## 🏗️ Tech Stack
 
 | Layer | Technology |
 |-------|------------|
 | Frontend | HTML5 + CSS3 + Vanilla JS |
 | Backend | Node.js + Express.js |
-| AI | OpenRouter API (free models with 5-model fallback) |
+| AI (Text) | OpenRouter API — free LLM models with 5-model fallback |
+| AI (Vision) | Google Gemini 2.0 Flash via OpenRouter |
 | Weather | Open-Meteo API (free, no key needed) |
-| i18n | Custom trilingual system (EN / অসমীয়া / हिन्दी) |
+| Image Upload | Multer (multipart/form-data) |
+| IoT — Camera | ESP32-CAM (AI Thinker) — Arduino/C++ |
+| IoT — Display | ESP32 + SSD1306 OLED — Adafruit GFX + ArduinoJson |
 
 ---
 
-## 📐 Architecture
-
-```
-Farmer → Form Input → POST /api/recommend
-  → Fetch Weather (Open-Meteo)
-  → Build AI Prompt (crops + schemes + language)
-  → OpenRouter API (5-model fallback chain)
-  → Parse JSON Response
-  → Render: Weather Widget + Crop Cards + Govt Schemes + General Advice
-```
-
-### Project Structure
+## 📁 Project Structure
 
 ```
 KrishiMitra/
 ├── client/
-│   ├── index.html              # Main UI (fully i18n-tagged)
-│   ├── css/style.css           # Minimalist design system
+│   ├── index.html              # Two-tab UI (Software + Hardware)
+│   ├── css/style.css           # Design system + tab + hardware card styles
 │   └── js/
-│       ├── app.js              # Form handling, rendering, language re-fetch
-│       └── i18n.js             # 45+ trilingual translation keys
+│       ├── app.js              # Tab switching, hardware polling, AI rendering
+│       └── i18n.js             # 50+ trilingual translation keys
 ├── server/
-│   ├── server.js               # Express server + API routes
+│   ├── server.js               # Express server — software + hardware API routes
 │   ├── services/
-│   │   ├── ai.js               # OpenRouter integration + prompt engineering
+│   │   ├── ai.js               # OpenRouter text AI + prompt engineering
 │   │   └── weather.js          # Open-Meteo weather fetcher
 │   └── data/
 │       └── districts.json      # 33 Assam districts with coordinates
+├── hardware/
+│   ├── espcam/espcam.ino       # ESP32-CAM sketch — captures & uploads soil images
+│   ├── esp_oled/esp_oled.ino   # ESP32 OLED sketch — fetches & displays advisory
+│   └── README.md               # Hardware setup guide
 ├── package.json
 └── README.md
 ```
 
 ---
 
+## 🔌 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/districts` | List of all 33 Assam districts |
+| `POST` | `/api/recommend` | AI crop recommendation (software tab) |
+| `POST` | `/api/upload-soil` | ESP32-CAM uploads soil image here |
+| `GET` | `/api/latest-advisory` | Latest soil analysis for website + OLED |
+| `GET` | `/health` | Health check with hardware status |
+
+---
+
 ## 🚀 Setup
 
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/bitopan09/KrishiMitra.git
-   cd KrishiMitra
-   ```
+### 1. Server + Website
 
-2. **Switch to v1.1 branch** *(for latest features)*
-   ```bash
-   git checkout v1.1
-   ```
+```bash
+# Clone the repo
+git clone https://github.com/bitopan09/KrishiMitra.git
+cd KrishiMitra
 
-3. **Install dependencies**
-   ```bash
-   cd server
-   npm install
-   ```
+# Use v1.2 branch for hardware integration
+git checkout v1.2
 
-4. **Add your API key**
-   ```bash
-   cp .env.example .env
-   # Edit .env and add your OpenRouter API key from https://openrouter.ai
-   ```
+# Install dependencies
+cd server && npm install
 
-5. **Run the server**
-   ```bash
-   node server.js
-   ```
+# Add your API key
+echo "OPENROUTER_API_KEY=your_key_here" > .env
 
-6. **Open in browser**
+# Run
+node server.js
+# → Open http://localhost:3000
+```
+
+### 2. ESP32-CAM (Soil Camera)
+
+1. Open `hardware/espcam/espcam.ino` in Arduino IDE
+2. Install board: **ESP32 by Espressif** (Board Manager)
+3. Update credentials:
+   ```cpp
+   const char* ssid = "YOUR_WIFI";
+   const char* password = "YOUR_PASSWORD";
+   String serverName = "http://YOUR_SERVER_IP:3000/api/upload-soil";
    ```
-   http://localhost:3000
-   ```
+4. Select board: **AI Thinker ESP32-CAM** → Upload → RESET
+
+### 3. ESP32 OLED Display
+
+1. Open `hardware/esp_oled/esp_oled.ino` in Arduino IDE
+2. Install libraries: `Adafruit SSD1306`, `Adafruit GFX`, `ArduinoJson`
+3. Wire the SSD1306: VCC→3.3V, GND→GND, SDA→GPIO21, SCL→GPIO22
+4. Update WiFi + server IP → Upload
 
 ---
 
@@ -125,38 +161,35 @@ KrishiMitra/
 
 | Variable | Description |
 |----------|-------------|
-| `OPENROUTER_API_KEY` | Your free API key from [openrouter.ai](https://openrouter.ai) |
+| `OPENROUTER_API_KEY` | Free key from [openrouter.ai](https://openrouter.ai) |
 | `PORT` | Server port (default: 3000) |
 
 ---
 
 ## 📋 Version History
 
-### v1.1 (Current)
-- ✅ Government scheme suggestions with step-by-step application instructions
-- ✅ Full multilingual support — ALL content (including AI-generated) switches on language toggle
-- ✅ Auto re-fetch results when language changes
-- ✅ Added Max Temp / Min Temp weather labels with translations
-- ✅ Hero badge trilingual support
-- ✅ Increased AI token limit for richer responses
-- ✅ Fallback scheme data (PM-KISAN, PMFBY, KCC) for offline resilience
+### v1.2 (Current — Hardware Integration)
+- ✅ Two-tab UI: Software tab + Hardware tab
+- ✅ ESP32-CAM soil image upload → Gemini Vision AI analysis
+- ✅ Live hardware dashboard (auto-refresh every 5 seconds)
+- ✅ Connection status indicator (pulsing dot)
+- ✅ Unified server — one port serves both website and ESP devices
+- ✅ Hardware translation keys (13 new trilingual strings)
+- ✅ Fixed i18n.js syntax error from escaped characters
+
+### v1.1
+- ✅ Government scheme suggestions (PM-KISAN, PMFBY, KCC, Assam state schemes)
+- ✅ Step-by-step application instructions per scheme
+- ✅ Full multilingual support — ALL content switches language on toggle
+- ✅ Auto re-fetch AI results when language changes
+- ✅ Added Max/Min Temp, hero badge translations
 
 ### v1.0
-- Initial release with AI crop recommendations
-- Weather integration via Open-Meteo
-- Basic trilingual UI (static labels only)
-- Mobile-first responsive design
-- 33 Assam district coverage
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- ✅ Initial release — AI crop recommendations
+- ✅ Live weather via Open-Meteo
+- ✅ Basic trilingual UI
+- ✅ Mobile-first design
+- ✅ 33 Assam district coverage
 
 ---
 

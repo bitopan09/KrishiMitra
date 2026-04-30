@@ -76,6 +76,22 @@ const translations = {
   'scheme_documents': { en: 'Documents Needed', as: 'প্ৰয়োজনীয় নথি-পত্ৰ', hi: 'आवश्यक दस्तावेज' },
   'scheme_helpline': { en: 'Helpline', as: 'হেল্পলাইন', hi: 'हेल्पलाइन' },
 
+
+  // ─── Tabs ─────────────────────────
+  'tab_software': { en: '💻 Software', as: '💻 চফ্টৱেৰ', hi: '💻 सॉफ्टवेयर' },
+  'tab_hardware': { en: '🔩 Hardware', as: '🔩 হাৰ্ডৱেৰ', hi: '🔩 हार्डवेयर' },
+
+  // ─── Hardware Tab ─────────────────
+  'hw_waiting': { en: 'Waiting for ESP32-CAM device...', as: 'ESP32-CAM ডিভাইচৰ বাবে অপেক্ষা কৰি আছে...', hi: 'ESP32-CAM डिवाइस की प्रतीक्षा में...' },
+  'hw_connected': { en: '🟢 ESP32-CAM connected — data received!', as: '🟢 ESP32-CAM সংযুক্ত — তথ্য পোৱা গৈছে!', hi: '🟢 ESP32-CAM जुड़ा — डेटा प्राप्त!' },
+  'hw_description': { en: '📷 Connect your ESP32-CAM to capture soil images. The AI will analyze the soil and display results here in real time.', as: '📷 মাটিৰ ছবি ল\'বলৈ আপোনাৰ ESP32-CAM সংযোগ কৰক। AI-য়ে মাটি বিশ্লেষণ কৰি ইয়াত ফলাফল দেখুৱাব।', hi: '📷 मिट्टी की तस्वीर लेने के लिए ESP32-CAM कनेक्ट करें। AI मिट्टी का विश्लेषण करेगा और यहाँ परिणाम दिखाएगा।' },
+  'hw_soil_type': { en: 'Soil Type', as: 'মাটিৰ প্ৰকাৰ', hi: 'मिट्टी का प्रकार' },
+  'hw_weather_outlook': { en: 'Weather Outlook', as: 'বতৰৰ আভাস', hi: 'मौसम का अनुमान' },
+  'hw_best_crop': { en: 'Best Crop', as: 'শ্ৰেষ্ঠ শস্য', hi: 'सर्वश्रेष्ठ फसल' },
+  'hw_waiting_short': { en: 'Waiting...', as: 'অপেক্ষা কৰক...', hi: 'प्रतीक्षा करें...' },
+  'hw_images_received': { en: 'Images received', as: 'ছবি পোৱা গৈছে', hi: 'तस्वीरें प्राप्त' },
+  'hw_last_updated': { en: 'Last updated', as: 'শেষ আপডেট', hi: 'अंतिम अपडेट' },
+  'hw_auto_refresh': { en: 'Auto-refreshing every 5 seconds', as: 'প্ৰতি ৫ ছেকেণ্ডত স্বয়ংক্ৰিয়ভাৱে আপডেট হৈ আছে', hi: 'हर 5 सेकंड में स्वतः रिफ्रेश हो रहा है' },
   // ─── Footer ──────────────────────
   'footer_text': { en: 'Built with ❤️ for Assam\'s Farmers', as: 'অসমৰ কৃষকৰ বাবে ❤️ ৰে নিৰ্মিত', hi: 'असम के किसानों के लिए ❤️ से बनाया गया' },
   'footer_hackathon': { en: 'Hackathon Project 2026', as: 'হেকাথন প্ৰকল্প ২০২৬', hi: 'हैकाथॉन प्रोजेक्ट 2026' },

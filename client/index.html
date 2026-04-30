@@ -34,83 +34,149 @@
     </div>
   </section>
 
-  <section id="formSection" class="form-section">
-    <div class="form-container">
-      <form id="cropForm">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="district" data-i18n="label_district">District</label>
-            <select id="district" name="district" required>
-              <option value="" data-i18n="select_district_placeholder">-- Select District --</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="soil" data-i18n="label_soil">Soil Type</label>
-            <select id="soil" name="soil" required>
-              <option value="" data-i18n="select_placeholder">-- Select --</option>
-              <option value="clay" data-i18n="soil_clay">Clay</option>
-              <option value="loam" data-i18n="soil_loam">Loam</option>
-              <option value="sandy" data-i18n="soil_sandy">Sandy</option>
-              <option value="alluvial" data-i18n="soil_alluvial">Alluvial</option>
-              <option value="laterite" data-i18n="soil_laterite">Laterite</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="season" data-i18n="label_season">Season</label>
-            <select id="season" name="season" required>
-              <option value="" data-i18n="select_placeholder">-- Select --</option>
-              <option value="kharif" data-i18n="season_kharif">Kharif (Jun–Oct)</option>
-              <option value="rabi" data-i18n="season_rabi">Rabi (Nov–Mar)</option>
-              <option value="zaid" data-i18n="season_zaid">Zaid (Mar–Jun)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="water" data-i18n="label_water">Water Availability</label>
-            <select id="water" name="water" required>
-              <option value="" data-i18n="select_placeholder">-- Select --</option>
-              <option value="rainfed" data-i18n="water_rainfed">Rain-fed</option>
-              <option value="irrigated" data-i18n="water_irrigated">Irrigated</option>
-              <option value="partial" data-i18n="water_partial">Partially Irrigated</option>
-            </select>
-          </div>
-          <div class="form-group full-width">
-            <label for="budget" data-i18n="label_budget">Budget</label>
-            <select id="budget" name="budget" required>
-              <option value="" data-i18n="select_placeholder">-- Select --</option>
-              <option value="low" data-i18n="budget_low">Low (Under ₹3,000/bigha)</option>
-              <option value="medium" data-i18n="budget_medium">Medium (₹3,000–8,000/bigha)</option>
-              <option value="high" data-i18n="budget_high">High (Above ₹8,000/bigha)</option>
-            </select>
-          </div>
-        </div>
-        <button type="submit" id="submitBtn" class="submit-btn">
-          <span id="btnText" data-i18n="btn_submit">Get Recommendations</span>
-          <div id="btnSpinner" class="spinner hidden"></div>
-        </button>
-      </form>
+  <!-- ─── Tab Bar ─────────────────────────────── -->
+  <div class="tab-bar-wrapper">
+    <div class="tab-bar" id="tabBar">
+      <button class="tab-btn active" id="tabSoftware" onclick="switchTab('software')" data-i18n="tab_software">💻 Software</button>
+      <button class="tab-btn" id="tabHardware" onclick="switchTab('hardware')" data-i18n="tab_hardware">🔩 Hardware</button>
     </div>
-  </section>
-
-  <div id="errorToast" class="error-toast hidden">
-    <span id="errorText"></span>
-    <button onclick="hideError()" class="toast-close">✕</button>
   </div>
 
-  <section id="resultsSection" class="results-section hidden">
-    <div id="weatherWidget" class="weather-widget">
-      <h3 data-i18n="weather_title">Current Weather</h3>
-      <div class="weather-grid" id="weatherGrid"></div>
-    </div>
-    <h3 class="results-heading" data-i18n="results_title">Recommended Crops</h3>
-    <div id="cropCards" class="crop-cards-grid"></div>
-    <div id="generalAdvice" class="general-advice"></div>
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ─── SOFTWARE TAB ──────────────────────── -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="softwareTab" class="tab-content active">
+    <section id="formSection" class="form-section">
+      <div class="form-container">
+        <form id="cropForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="district" data-i18n="label_district">District</label>
+              <select id="district" name="district" required>
+                <option value="" data-i18n="select_district_placeholder">-- Select District --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="soil" data-i18n="label_soil">Soil Type</label>
+              <select id="soil" name="soil" required>
+                <option value="" data-i18n="select_placeholder">-- Select --</option>
+                <option value="clay" data-i18n="soil_clay">Clay</option>
+                <option value="loam" data-i18n="soil_loam">Loam</option>
+                <option value="sandy" data-i18n="soil_sandy">Sandy</option>
+                <option value="alluvial" data-i18n="soil_alluvial">Alluvial</option>
+                <option value="laterite" data-i18n="soil_laterite">Laterite</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="season" data-i18n="label_season">Season</label>
+              <select id="season" name="season" required>
+                <option value="" data-i18n="select_placeholder">-- Select --</option>
+                <option value="kharif" data-i18n="season_kharif">Kharif (Jun–Oct)</option>
+                <option value="rabi" data-i18n="season_rabi">Rabi (Nov–Mar)</option>
+                <option value="zaid" data-i18n="season_zaid">Zaid (Mar–Jun)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="water" data-i18n="label_water">Water Availability</label>
+              <select id="water" name="water" required>
+                <option value="" data-i18n="select_placeholder">-- Select --</option>
+                <option value="rainfed" data-i18n="water_rainfed">Rain-fed</option>
+                <option value="irrigated" data-i18n="water_irrigated">Irrigated</option>
+                <option value="partial" data-i18n="water_partial">Partially Irrigated</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label for="budget" data-i18n="label_budget">Budget</label>
+              <select id="budget" name="budget" required>
+                <option value="" data-i18n="select_placeholder">-- Select --</option>
+                <option value="low" data-i18n="budget_low">Low (Under ₹3,000/bigha)</option>
+                <option value="medium" data-i18n="budget_medium">Medium (₹3,000–8,000/bigha)</option>
+                <option value="high" data-i18n="budget_high">High (Above ₹8,000/bigha)</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" id="submitBtn" class="submit-btn">
+            <span id="btnText" data-i18n="btn_submit">Get Recommendations</span>
+            <div id="btnSpinner" class="spinner hidden"></div>
+          </button>
+        </form>
+      </div>
+    </section>
 
-    <div id="schemesSection" class="schemes-section hidden">
-      <h3 class="results-heading schemes-heading" data-i18n="schemes_title">🏛️ Government Schemes For You</h3>
-      <p class="schemes-subtitle" data-i18n="schemes_subtitle">These schemes can help you with funding, insurance, and support. Follow the simple steps to apply.</p>
-      <div id="schemeCards" class="scheme-cards-grid"></div>
+    <div id="errorToast" class="error-toast hidden">
+      <span id="errorText"></span>
+      <button onclick="hideError()" class="toast-close">✕</button>
     </div>
-  </section>
+
+    <section id="resultsSection" class="results-section hidden">
+      <div id="weatherWidget" class="weather-widget">
+        <h3 data-i18n="weather_title">Current Weather</h3>
+        <div class="weather-grid" id="weatherGrid"></div>
+      </div>
+      <h3 class="results-heading" data-i18n="results_title">Recommended Crops</h3>
+      <div id="cropCards" class="crop-cards-grid"></div>
+      <div id="generalAdvice" class="general-advice"></div>
+
+      <div id="schemesSection" class="schemes-section hidden">
+        <h3 class="results-heading schemes-heading" data-i18n="schemes_title">🏛️ Government Schemes For You</h3>
+        <p class="schemes-subtitle" data-i18n="schemes_subtitle">These schemes can help you with funding, insurance, and support. Follow the simple steps to apply.</p>
+        <div id="schemeCards" class="scheme-cards-grid"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- ─── HARDWARE TAB ──────────────────────── -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="hardwareTab" class="tab-content">
+    <section class="hardware-section">
+      <div class="hardware-container">
+
+        <!-- Status Bar -->
+        <div class="hw-status-bar" id="hwStatusBar">
+          <div class="hw-status-dot" id="hwStatusDot"></div>
+          <span class="hw-status-text" id="hwStatusText" data-i18n="hw_waiting">Waiting for ESP32-CAM device...</span>
+        </div>
+
+        <!-- Info Box -->
+        <div class="hw-info-box">
+          <p data-i18n="hw_description">📷 Connect your ESP32-CAM to capture soil images. The AI will analyze the soil and display results here in real time.</p>
+        </div>
+
+        <!-- Data Cards Grid -->
+        <div class="hw-cards-grid" id="hwCardsGrid">
+          <div class="hw-card" id="hwSoilCard">
+            <div class="hw-card-icon">🪨</div>
+            <div class="hw-card-header" data-i18n="hw_soil_type">Soil Type</div>
+            <div class="hw-card-value" id="hwSoilValue" data-i18n="hw_waiting_short">Waiting...</div>
+          </div>
+          <div class="hw-card" id="hwWeatherCard">
+            <div class="hw-card-icon">🌦️</div>
+            <div class="hw-card-header" data-i18n="hw_weather_outlook">Weather Outlook</div>
+            <div class="hw-card-value" id="hwWeatherValue" data-i18n="hw_waiting_short">Waiting...</div>
+          </div>
+          <div class="hw-card" id="hwCropCard">
+            <div class="hw-card-icon">🌾</div>
+            <div class="hw-card-header" data-i18n="hw_best_crop">Best Crop</div>
+            <div class="hw-card-value" id="hwCropValue" data-i18n="hw_waiting_short">Waiting...</div>
+          </div>
+        </div>
+
+        <!-- Metadata -->
+        <div class="hw-meta" id="hwMeta">
+          <span class="hw-meta-item" id="hwImageCount">📷 <span data-i18n="hw_images_received">Images received</span>: <strong id="hwImageCountVal">0</strong></span>
+          <span class="hw-meta-item" id="hwLastUpdated">🕐 <span data-i18n="hw_last_updated">Last updated</span>: <strong id="hwTimestamp">--</strong></span>
+        </div>
+
+        <!-- Auto-refresh notice -->
+        <div class="hw-refresh-notice">
+          <div class="hw-pulse"></div>
+          <span data-i18n="hw_auto_refresh">Auto-refreshing every 5 seconds</span>
+        </div>
+
+      </div>
+    </section>
+  </div>
 
   <footer id="footer">
     <p data-i18n="footer_text">Built with ❤️ for Assam's Farmers</p>
