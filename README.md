@@ -6,6 +6,8 @@
 
 KrishiMitra helps small and marginal farmers in Assam get personalized crop recommendations and relevant government scheme suggestions based on their soil type, season, water availability, budget, and live weather data.
 
+> 🔩 **Looking for hardware integration?** See the [`v1.2`](https://github.com/bitopan09/KrishiMitra/tree/v1.2) branch which adds ESP32-CAM soil analysis and a two-tab UI.
+
 ---
 
 ## ✨ Features
@@ -13,7 +15,7 @@ KrishiMitra helps small and marginal farmers in Assam get personalized crop reco
 ### 🤖 AI-Powered Crop Recommendations
 Uses free LLM models via OpenRouter to generate 3 crop suggestions with sowing window, fertilizer, yield, and cost estimates tailored to the farmer's conditions.
 
-### 🏛️ Government Scheme Suggestions *(New in v1.1)*
+### 🏛️ Government Scheme Suggestions
 After crop recommendations, the AI suggests 2–3 relevant Central & Assam state government schemes (PM-KISAN, PMFBY, KCC, etc.) with:
 - ✅ **Eligibility** — Who can apply
 - 🎁 **Benefits** — What the farmer gets
@@ -21,14 +23,14 @@ After crop recommendations, the AI suggests 2–3 relevant Central & Assam state
 - 📄 **Documents needed** — Aadhaar, land papers, bank passbook, etc.
 - 📞 **Helpline numbers** — Toll-free numbers and websites
 
-### 🗣️ Full Trilingual Support *(Enhanced in v1.1)*
+### 🗣️ Full Trilingual Support
 Complete UI and AI responses in **English**, **অসমীয়া (Assamese)**, and **हिन्दी (Hindi)**:
 - Every single UI element switches language on toggle
-- **AI-generated content auto re-fetches** in the new language — crop names, scheme details, application steps, advice — everything translates
+- AI-generated content auto re-fetches in the new language
 - Language preference saved to localStorage
 
 ### 🌦️ Live Weather Integration
-Fetches real-time weather from Open-Meteo API (free, no key needed) to make recommendations weather-aware. Displays temperature, humidity, rainfall, wind speed, max/min temp.
+Fetches real-time weather from Open-Meteo API (free, no key needed). Displays temperature, humidity, rainfall, wind speed, max/min temp.
 
 ### 📱 Mobile-First Design
 Clean, minimalist UI with Inter font, optimized for farmers using phones.
@@ -38,7 +40,7 @@ Covers all districts with precise lat/lng coordinates for accurate weather looku
 
 ---
 
-## 🛠️ Tech Stack
+## 🏗️ Tech Stack
 
 | Layer | Technology |
 |-------|------------|
@@ -50,18 +52,7 @@ Covers all districts with precise lat/lng coordinates for accurate weather looku
 
 ---
 
-## 📐 Architecture
-
-```
-Farmer → Form Input → POST /api/recommend
-  → Fetch Weather (Open-Meteo)
-  → Build AI Prompt (crops + schemes + language)
-  → OpenRouter API (5-model fallback chain)
-  → Parse JSON Response
-  → Render: Weather Widget + Crop Cards + Govt Schemes + General Advice
-```
-
-### Project Structure
+## 📁 Project Structure
 
 ```
 KrishiMitra/
@@ -86,38 +77,22 @@ KrishiMitra/
 
 ## 🚀 Setup
 
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/bitopan09/KrishiMitra.git
-   cd KrishiMitra
-   ```
+```bash
+# Clone the repo
+git clone https://github.com/bitopan09/KrishiMitra.git
+cd KrishiMitra
+git checkout v1.1
 
-2. **Switch to v1.1 branch** *(for latest features)*
-   ```bash
-   git checkout v1.1
-   ```
+# Install dependencies
+cd server && npm install
 
-3. **Install dependencies**
-   ```bash
-   cd server
-   npm install
-   ```
+# Add your API key
+echo "OPENROUTER_API_KEY=your_key_here" > .env
 
-4. **Add your API key**
-   ```bash
-   cp .env.example .env
-   # Edit .env and add your OpenRouter API key from https://openrouter.ai
-   ```
-
-5. **Run the server**
-   ```bash
-   node server.js
-   ```
-
-6. **Open in browser**
-   ```
-   http://localhost:3000
-   ```
+# Run
+node server.js
+# → Open http://localhost:3000
+```
 
 ---
 
@@ -125,38 +100,31 @@ KrishiMitra/
 
 | Variable | Description |
 |----------|-------------|
-| `OPENROUTER_API_KEY` | Your free API key from [openrouter.ai](https://openrouter.ai) |
+| `OPENROUTER_API_KEY` | Free key from [openrouter.ai](https://openrouter.ai) |
 | `PORT` | Server port (default: 3000) |
 
 ---
 
 ## 📋 Version History
 
-### v1.1 (Current)
+### v1.1 (This branch)
 - ✅ Government scheme suggestions with step-by-step application instructions
-- ✅ Full multilingual support — ALL content (including AI-generated) switches on language toggle
-- ✅ Auto re-fetch results when language changes
-- ✅ Added Max Temp / Min Temp weather labels with translations
-- ✅ Hero badge trilingual support
-- ✅ Increased AI token limit for richer responses
-- ✅ Fallback scheme data (PM-KISAN, PMFBY, KCC) for offline resilience
+- ✅ Full multilingual support — ALL content switches language on toggle
+- ✅ Auto re-fetch AI results when language changes
+- ✅ Max/Min Temp weather labels with translations
+- ✅ Hero badge multilingual support
 
 ### v1.0
-- Initial release with AI crop recommendations
-- Weather integration via Open-Meteo
-- Basic trilingual UI (static labels only)
-- Mobile-first responsive design
-- 33 Assam district coverage
+- ✅ Initial release — AI crop recommendations
+- ✅ Live weather via Open-Meteo
+- ✅ Basic trilingual UI
+- ✅ Mobile-first design
+- ✅ 33 Assam district coverage
 
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### v1.2 → [Hardware Integration Branch](https://github.com/bitopan09/KrishiMitra/tree/v1.2)
+- ESP32-CAM soil image analysis
+- Two-tab UI (Software + Hardware)
+- Live hardware dashboard with auto-refresh
 
 ---
 
