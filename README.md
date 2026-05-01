@@ -1,18 +1,18 @@
-# KrishiMitra 🌾
+# KrishiMitra 
 
 **AI-Powered Crop Recommendation & Advisory System for Assam Farmers**
 
-🔗 **Live Demo:** [https://krishimitra-p62s.onrender.com](https://krishimitra-p62s.onrender.com)
+**Live Demo:** [https://krishimitra-p62s.onrender.com](https://krishimitra-p62s.onrender.com)
 
 KrishiMitra helps small and marginal farmers in Assam get personalized crop recommendations and relevant government scheme suggestions based on their soil type, season, water availability, budget, and live weather data.
 
-> 🔩 **Looking for hardware integration?** See the [`v1.2`](https://github.com/bitopan09/KrishiMitra/tree/v1.2) branch which adds ESP32-CAM soil analysis and a two-tab UI.
+> **Looking for hardware integration?** See the [`v1.2`](https://github.com/bitopan09/KrishiMitra/tree/v1.2) branch which adds ESP32-CAM soil analysis and a two-tab UI.
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🤖 AI-Powered Crop Recommendations
+###  AI-Powered Crop Recommendations
 Uses free LLM models via OpenRouter to generate 3 crop suggestions with sowing window, fertilizer, yield, and cost estimates tailored to the farmer's conditions.
 
 ### 🏛️ Government Scheme Suggestions
@@ -23,24 +23,24 @@ After crop recommendations, the AI suggests 2–3 relevant Central & Assam state
 - 📄 **Documents needed** — Aadhaar, land papers, bank passbook, etc.
 - 📞 **Helpline numbers** — Toll-free numbers and websites
 
-### 🗣️ Full Trilingual Support
+###  Full Trilingual Support
 Complete UI and AI responses in **English**, **অসমীয়া (Assamese)**, and **हिन्दी (Hindi)**:
 - Every single UI element switches language on toggle
 - AI-generated content auto re-fetches in the new language
 - Language preference saved to localStorage
 
-### 🌦️ Live Weather Integration
+###  Live Weather Integration
 Fetches real-time weather from Open-Meteo API (free, no key needed). Displays temperature, humidity, rainfall, wind speed, max/min temp.
 
-### 📱 Mobile-First Design
+###  Mobile-First Design
 Clean, minimalist UI with Inter font, optimized for farmers using phones.
 
-### 🌍 33 Assam Districts
+###  33 Assam Districts
 Covers all districts with precise lat/lng coordinates for accurate weather lookups.
 
 ---
 
-## 🏗️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|------------|
@@ -52,7 +52,7 @@ Covers all districts with precise lat/lng coordinates for accurate weather looku
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 KrishiMitra/
@@ -75,7 +75,7 @@ KrishiMitra/
 
 ---
 
-## 🚀 Setup
+##  Setup
 
 ```bash
 # Clone the repo
@@ -96,7 +96,7 @@ node server.js
 
 ---
 
-## 🔑 Environment Variables
+##  Environment Variables
 
 | Variable | Description |
 |----------|-------------|
@@ -105,7 +105,7 @@ node server.js
 
 ---
 
-## 📋 Version History
+##  Version History
 
 ### v1.1 (This branch)
 - ✅ Government scheme suggestions with step-by-step application instructions
