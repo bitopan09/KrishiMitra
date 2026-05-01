@@ -14,11 +14,13 @@ const char* ssid = "qwerty12";
 const char* password = "pps20004";
 
 // The endpoint on your Node.js server
-const char* serverName = "https://krishimitra-1-o0dj.onrender.com/api/latest-advisory";
+const char* serverName     = "https://krishimitra-1-o0dj.onrender.com/api/latest-advisory";
+const char* heartbeatUrl   = "https://krishimitra-1-o0dj.onrender.com/api/heartbeat";
 
 // ---- DISPLAY SETTINGS ----
-#define PAGE_DURATION_MS  3000   // Show each page for 3 seconds
-#define FETCH_INTERVAL_MS 10000  // Fetch new data every 10 seconds
+#define PAGE_DURATION_MS   3000   // Show each page for 3 seconds
+#define FETCH_INTERVAL_MS  10000  // Fetch new data every 10 seconds
+#define HEARTBEAT_INTERVAL 8000   // Send heartbeat every 8 seconds
 // ---------------------------
 
 // Stored advisory data
@@ -30,6 +32,7 @@ bool dataReady = false;
 int currentPage = 0;            // 0=Soil, 1=Weather, 2=Crop
 unsigned long lastPageSwitch = 0;
 unsigned long lastFetch = 0;
+unsigned long lastHeartbeatSent = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -64,6 +67,12 @@ void setup() {
 void loop() {
   unsigned long now = millis();
 
+  // Send heartbeat periodically so the server knows we are alive
+  if (now - lastHeartbeatSent >= HEARTBEAT_INTERVAL) {
+    sendHeartbeat();
+    lastHeartbeatSent = now;
+  }
+
   // Fetch new data periodically
   if (now - lastFetch >= FETCH_INTERVAL_MS) {
     fetchAdvisory();
@@ -76,6 +85,17 @@ void loop() {
     lastPageSwitch = now;
     showCurrentPage();
   }
+}
+
+void sendHeartbeat() {
+  if (WiFi.status() != WL_CONNECTED) return;
+  HTTPClient http;
+  http.begin(heartbeatUrl);
+  http.addHeader("Content-Type", "application/json");
+  http.setTimeout(3000);
+  http.POST("{\"device\":\"esp_oled\"}");
+  http.end();
+  Serial.println("Heartbeat sent");
 }
 
 void fetchAdvisory() {

@@ -413,11 +413,17 @@ function updateHardwareUI(data) {
   // Update image count
   countVal.textContent = data.imageCount || 0;
 
-  if (data.ready) {
-    // Connected state
+  // ── Connection indicator (heartbeat-based) ──────────────
+  if (data.espConnected) {
     dot.className = 'hw-status-dot connected';
     statusText.textContent = t('hw_connected');
+  } else {
+    dot.className = 'hw-status-dot waiting';
+    statusText.textContent = t('hw_waiting');
+  }
 
+  // ── Card content (data.ready = at least one image processed) ──
+  if (data.ready) {
     // Check if data actually changed
     const dataChanged = !hwLastData ||
       hwLastData.soil !== data.soil ||
@@ -454,10 +460,6 @@ function updateHardwareUI(data) {
 
     hwLastData = { ...data };
   } else {
-    // Waiting state
-    dot.className = 'hw-status-dot waiting';
-    statusText.textContent = t('hw_waiting');
-
     soilVal.textContent = t('hw_waiting_short');
     soilVal.classList.add('waiting');
     weatherVal.textContent = t('hw_waiting_short');

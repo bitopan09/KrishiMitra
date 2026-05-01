@@ -25,6 +25,20 @@ let latestAdvisory = {
   imageCount: 0
 };
 
+// Heartbeat tracking — keyed by device name
+const HEARTBEAT_TIMEOUT_MS = 15000; // 15 seconds
+let lastHeartbeat = {}; // e.g. { esp_oled: <Date>, esp_cam: <Date> }
+
+function isDeviceConnected(deviceName) {
+  const ts = lastHeartbeat[deviceName];
+  if (!ts) return false;
+  return (Date.now() - ts) < HEARTBEAT_TIMEOUT_MS;
+}
+
+function anyDeviceConnected() {
+  return Object.keys(lastHeartbeat).some(name => isDeviceConnected(name));
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -108,11 +122,27 @@ app.post('/api/recommend', async (req, res) => {
 // ─── Hardware API Routes ───────────────────────────────────
 
 /**
+ * POST /api/heartbeat
+ * ESP devices call this endpoint periodically to signal they are alive.
+ * Body: { "device": "esp_oled" } or { "device": "esp_cam" }
+ */
+app.post('/api/heartbeat', (req, res) => {
+  const device = (req.body && req.body.device) ? req.body.device : 'unknown';
+  lastHeartbeat[device] = Date.now();
+  console.log(`💓 Heartbeat from ${device}`);
+  res.status(200).json({ ok: true });
+});
+
+/**
  * POST /api/upload-soil
  * ESP32-CAM uploads a soil image here. We process it with Gemini Vision AI in the background.
+ * Also counts as a heartbeat for esp_cam.
  */
 app.post('/api/upload-soil', upload.single('imageFile'), (req, res) => {
   if (!req.file) return res.status(400).send('No image uploaded');
+
+  // Treat an upload as a heartbeat for the CAM
+  lastHeartbeat['esp_cam'] = Date.now();
 
   latestAdvisory.imageCount++;
   console.log(`\n📷 Image #${latestAdvisory.imageCount} received from ESP32-CAM! (${(req.file.size / 1024).toFixed(1)} KB)`);
@@ -127,10 +157,17 @@ app.post('/api/upload-soil', upload.single('imageFile'), (req, res) => {
 
 /**
  * GET /api/latest-advisory
- * Returns the latest structured advisory for OLED display and the website hardware tab
+ * Returns the latest structured advisory plus live connection status.
  */
 app.get('/api/latest-advisory', (req, res) => {
-  res.json(latestAdvisory);
+  res.json({
+    ...latestAdvisory,
+    espConnected: anyDeviceConnected(),
+    devices: {
+      esp_oled: isDeviceConnected('esp_oled'),
+      esp_cam:  isDeviceConnected('esp_cam')
+    }
+  });
 });
 
 /**
