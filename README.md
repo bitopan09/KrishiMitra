@@ -1,16 +1,16 @@
-# KrishiMitra 🌾
+# KrishiMitra 
 
 **AI-Powered Crop Recommendation & Advisory System for Assam Farmers**
 
-🔗 **Live Demo:** [https://krishimitra-p62s.onrender.com](https://krishimitra-p62s.onrender.com)
+**Live Demo:** [https://krishimitra-p62s.onrender.com](https://krishimitra-p62s.onrender.com)
 
 KrishiMitra helps small and marginal farmers in Assam get personalized crop recommendations, relevant government scheme suggestions, and now — real-time soil analysis via an ESP32-CAM hardware module.
 
 ---
 
-## 🆕 What's New in v1.2 — Hardware Integration
+##  What's New in v1.2 — Hardware Integration
 
-### 🔩 Two-Tab Interface
+###  Two-Tab Interface
 The website now has a **Software** tab and a **Hardware** tab:
 
 | Tab | Description |
@@ -44,7 +44,7 @@ The website now has a **Software** tab and a **Hardware** tab:
 
 ---
 
-## ✨ All Features
+## All Features
 
 | | Feature | Description |
 |--|---------|-------------|
@@ -59,7 +59,7 @@ The website now has a **Software** tab and a **Hardware** tab:
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
@@ -74,7 +74,7 @@ The website now has a **Software** tab and a **Hardware** tab:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 KrishiMitra/
@@ -101,7 +101,7 @@ KrishiMitra/
 
 ---
 
-## 🔌 API Endpoints
+##  API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -113,7 +113,7 @@ KrishiMitra/
 
 ---
 
-## 🚀 Setup
+## Setup
 
 ### 1. Server + Website
 
@@ -157,7 +157,7 @@ node server.js
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 | Variable | Description |
 |----------|-------------|
@@ -166,7 +166,7 @@ node server.js
 
 ---
 
-## 📋 Version History
+## Version History
 
 ### v1.2 (Current — Hardware Integration)
 - ✅ Two-tab UI: Software tab + Hardware tab
